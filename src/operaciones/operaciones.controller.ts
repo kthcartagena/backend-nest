@@ -6,7 +6,7 @@ import { Response } from 'express';
 export class OperacionesController {
   constructor(private readonly operService: OperacionesService) {}
 
-  @Get()
+  @Get()  
   operar(
     @Res() res: Response,
     @Query('operacion') operacion: string,
@@ -15,14 +15,16 @@ export class OperacionesController {
   ) {
     const calculo = this.operService.operar(operacion, +a, +b);
 
-    if (calculo) {
+    if (calculo) {      
       return res
         .status(200)
         .json({ resultado: calculo, mensaje: 'operacion exitosa' });
     }
 
+    // Si el resultado es NaN o no se pudo calcular
     return res
       .status(502)
       .json({ resultado: NaN, mensaje: 'operacion no pudo ser calculada' });
+
   }
 }
