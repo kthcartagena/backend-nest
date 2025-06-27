@@ -2,6 +2,12 @@ pipeline{
     agent any                   // tipo de nodo donde se ejecuta el pipeline
     
     //escenarios -> escenario -> pasos
+    environment {
+        // Variables de entorno
+        npm_config_cache = "${WORKSPACE}/.npm" // cache de npm
+        NODE_ENV = 'production'
+        APP_NAME = 'my-node-app'
+    }
     stages {
         stage('saludo a usuario') {           
             steps {
