@@ -1,18 +1,28 @@
 pipeline{
-    agent any
-//escenarios -> escenario -> pasos
+    agent any                   // tipo de nodo donde se ejecuta el pipeline
+    
+    //escenarios -> escenario -> pasos
     stages {
-        stage('saludo a usuario') {
+        stage('saludo a usuario') {           
             steps {
-                sh '"echo Hola, usuario!"'
+                sh '"echo Hola, saludo!"'
             }
+        }  
+        stage('Build docker'){
+            agent {
+                docker {
+                    image 'node:22'  // imagen de docker que se usara
+                    reuseNode true // reutiliza el nodo de docker
+                }
+            }
+            stages('Install Dependencies') {
+                steps {
+                    echo 'Instalando dependencias...'
+                    sh 'npm ci'
+                }           
+            }        
         }
-        // stage('Build') {
-        //     steps {
-        //         echo 'Building the project...'
-        //         sh 'npm install'
-        //     }
-        // }
+    
         // stage('Test') {
         //     steps {
         //         echo 'Running tests...'
@@ -25,6 +35,4 @@ pipeline{
         //         sh 'npm run deploy'
         //     }
         // }
-    }    
-
-}
+}    
