@@ -1,44 +1,34 @@
-pipeline{
-    agent any                   // tipo de nodo donde se ejecuta el pipeline
-    
-    //escenarios -> escenario -> pasos
-    environment {
-        // Variables de entorno
-        npm_config_cache = "${WORKSPACE}/.npm" // cache de npm
-        NODE_ENV = 'production'
-        APP_NAME = 'my-node-app'
+pipeline {
+    agent any
+    // escenarios -> escenario -> pasos
+    environment{
+        NPM_CONFIG_CACHE= "${WORKSPACE}/.npm"
     }
-    stages {
-        stage('saludo a usuario') {           
+    stages{
+        stage ("saludo a usuario") {
             steps {
-                sh '"echo Hola, saludo!"'
+                sh 'echo "comenzado mi pipeline"'
             }
-        }  
-        stage('Build docker'){
+        }
+        stage ("salida de los saludos a usuario") {
+            steps {
+                sh 'echo "saliendo de este grupo de escenarios"'
+            }
+        }
+        stage ("proceso de build y test") {
             agent {
                 docker {
-                    image 'node:22'  // imagen de docker que se usara
-                    reuseNode true // reutiliza el nodo de docker
+                    image 'node:22'
+                    reuseNode true
                 }
             }
-            stages('Install Dependencies') {
-                steps {
-                    echo 'Instalando dependencias...'
-                    sh 'npm ci'
-                }           
-            }        
+            stages {
+                stage("instalacion de dependencias"){
+                    steps {
+                        sh 'npm ci'
+                    }
+                }
+            }
         }
-    
-        // stage('Test') {
-        //     steps {
-        //         echo 'Running tests...'
-        //         sh 'npm test'
-        //     }
-        // }
-        // stage('Deploy') {
-        //     steps {
-        //         echo 'Deploying the application...'
-        //         sh 'npm run deploy'
-        //     }
-        // }
-}    
+    }
+}
